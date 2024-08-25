@@ -1,6 +1,6 @@
 [package]
-name = "ore-utils"
-description = "Utils for building ORE programs"
+name = "smelter-utils"
+description = "Utils for building Smelter programs"
 version.workspace = true
 edition.workspace = true
 license.workspace = true
