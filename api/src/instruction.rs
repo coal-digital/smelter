@@ -19,12 +19,11 @@ pub enum OreInstruction {
     // User
     Claim = 0,
     Close = 1,
-    Mine = 2,
+    Smelt = 2,
     Open = 3,
     Reset = 4,
     Stake = 5,
     Update = 6,
-    Upgrade = 7,
 
     // Admin
     Initialize = 100,
@@ -151,13 +150,22 @@ pub fn close(signer: Pubkey) -> Instruction {
 }
 
 /// Builds a mine instruction.
-pub fn mine(
+pub fn smelt(
     signer: Pubkey,
     proof_authority: Pubkey,
     bus: Pubkey,
     solution: Solution,
 ) -> Instruction {
     let proof = Pubkey::find_program_address(&[PROOF, proof_authority.as_ref()], &crate::id()).0;
+    let ore_token_address = spl_associated_token_account::get_associated_token_address(
+        &signer,
+        &ORE_MINT_ADDRESS,
+    );
+    let coal_token_address = spl_associated_token_account::get_associated_token_address(
+        &signer,
+        &COAL_MINT_ADDRESS,
+    );
+    
     Instruction {
         program_id: crate::id(),
         accounts: vec![
@@ -165,11 +173,15 @@ pub fn mine(
             AccountMeta::new(bus, false),
             AccountMeta::new_readonly(CONFIG_ADDRESS, false),
             AccountMeta::new(proof, false),
+            AccountMeta::new_readonly(COAL_MINT_ADDRESS, false),
+            AccountMeta::new(coal_token_address, false),
+            AccountMeta::new(ore_token_address, false),
+            AccountMeta::new_readonly(spl_token::id(), false),
             AccountMeta::new_readonly(sysvar::instructions::id(), false),
             AccountMeta::new_readonly(sysvar::slot_hashes::id(), false),
         ],
         data: [
-            OreInstruction::Mine.to_vec(),
+            OreInstruction::Smelt.to_vec(),
             MineArgs {
                 digest: solution.d,
                 nonce: solution.n,
@@ -272,31 +284,6 @@ pub fn update(signer: Pubkey, miner: Pubkey) -> Instruction {
     }
 }
 
-// Build an upgrade instruction.
-pub fn upgrade(signer: Pubkey, beneficiary: Pubkey, sender: Pubkey, amount: u64) -> Instruction {
-    Instruction {
-        program_id: crate::id(),
-        accounts: vec![
-            AccountMeta::new(signer, true),
-            AccountMeta::new(beneficiary, false),
-            AccountMeta::new(MINT_ADDRESS, false),
-            AccountMeta::new(MINT_V1_ADDRESS, false),
-            AccountMeta::new(sender, false),
-            AccountMeta::new(TREASURY_ADDRESS, false),
-            AccountMeta::new_readonly(spl_token::id(), false),
-        ],
-        data: [
-            OreInstruction::Upgrade.to_vec(),
-            UpgradeArgs {
-                amount: amount.to_le_bytes(),
-            }
-            .to_bytes()
-            .to_vec(),
-        ]
-        .concat(),
-    }
-}
-
 /// Builds an initialize instruction.
 pub fn initialize(signer: Pubkey) -> Instruction {
     let bus_pdas = [
@@ -311,9 +298,12 @@ pub fn initialize(signer: Pubkey) -> Instruction {
     ];
     let config_pda = Pubkey::find_program_address(&[CONFIG], &crate::id());
     let mint_pda = Pubkey::find_program_address(&[MINT, MINT_NOISE.as_slice()], &crate::id());
+
     let treasury_pda = Pubkey::find_program_address(&[TREASURY], &crate::id());
     let treasury_tokens =
         spl_associated_token_account::get_associated_token_address(&treasury_pda.0, &mint_pda.0);
+    let ore_treasury_tokens =
+        spl_associated_token_account::get_associated_token_address(&treasury_pda.0, &ORE_MINT_ADDRESS);
     let metadata_pda = Pubkey::find_program_address(
         &[
             METADATA,
@@ -337,8 +327,10 @@ pub fn initialize(signer: Pubkey) -> Instruction {
             AccountMeta::new(config_pda.0, false),
             AccountMeta::new(metadata_pda.0, false),
             AccountMeta::new(mint_pda.0, false),
+            AccountMeta::new(ORE_MINT_ADDRESS, false),
             AccountMeta::new(treasury_pda.0, false),
             AccountMeta::new(treasury_tokens, false),
+            AccountMeta::new(ore_treasury_tokens, false),
             AccountMeta::new_readonly(system_program::id(), false),
             AccountMeta::new_readonly(spl_token::id(), false),
             AccountMeta::new_readonly(spl_associated_token_account::id(), false),

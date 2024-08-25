@@ -251,3 +251,17 @@ pub fn load_treasury_tokens<'a, 'info>(
 
     load_token_account(info, Some(&TREASURY_ADDRESS), &MINT_ADDRESS, is_writable)
 }
+
+/// Errors if:
+/// - Address does not match the expected treasury tokens address.
+/// - Cannot load as a token accoun
+pub fn load_treasury_ore_tokens<'a, 'info>(
+    info: &'a AccountInfo<'info>,
+    is_writable: bool,
+) -> Result<(), ProgramError> {
+    if info.key.ne(&TREASURY_ORE_TOKENS_ADDRESS) {
+        return Err(ProgramError::InvalidSeeds);
+    }
+
+    load_token_account(info, Some(&TREASURY_ADDRESS), &ORE_MINT_ADDRESS, is_writable)
+}

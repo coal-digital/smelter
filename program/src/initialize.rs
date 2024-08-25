@@ -24,7 +24,7 @@ pub fn process_initialize<'a, 'info>(
     let args = InitializeArgs::try_from_bytes(data)?;
 
     // Load accounts.
-    let [signer, bus_0_info, bus_1_info, bus_2_info, bus_3_info, bus_4_info, bus_5_info, bus_6_info, bus_7_info, config_info, metadata_info, mint_info, treasury_info, treasury_tokens_info, system_program, token_program, associated_token_program, metadata_program, rent_sysvar] =
+    let [signer, bus_0_info, bus_1_info, bus_2_info, bus_3_info, bus_4_info, bus_5_info, bus_6_info, bus_7_info, config_info, metadata_info, mint_info, ore_mint_info, treasury_info, treasury_tokens_info, ore_treasury_tokens_info, system_program, token_program, associated_token_program, metadata_program, rent_sysvar] =
         accounts
     else {
         return Err(ProgramError::NotEnoughAccountKeys);
@@ -62,6 +62,7 @@ pub fn process_initialize<'a, 'info>(
         &ore_api::id(),
     )?;
     load_system_account(treasury_tokens_info, true)?;
+    load_system_account(ore_treasury_tokens_info, true)?;
     load_program(system_program, system_program::id())?;
     load_program(token_program, spl_token::id())?;
     load_program(associated_token_program, spl_associated_token_account::id())?;
@@ -162,7 +163,7 @@ pub fn process_initialize<'a, 'info>(
         &[&[MINT, MINT_NOISE.as_slice(), &[args.mint_bump]]],
     )?;
 
-    // Initialize mint metadata.
+    // Initialize INGOT mint metadata.
     mpl_token_metadata::instructions::CreateMetadataAccountV3Cpi {
         __program: metadata_program,
         metadata: metadata_info,
@@ -188,12 +189,23 @@ pub fn process_initialize<'a, 'info>(
     }
     .invoke_signed(&[&[TREASURY, &[args.treasury_bump]]])?;
 
-    // Initialize treasury token account.
+    // Initialize the IGNOT treasury token account.
     create_ata(
         signer,
         treasury_info,
         treasury_tokens_info,
         mint_info,
+        system_program,
+        token_program,
+        associated_token_program,
+    )?;
+
+    // Initialize the ORE treasury token account.
+    create_ata(
+        signer,
+        treasury_info,
+        ore_treasury_tokens_info,
+        ore_mint_info,
         system_program,
         token_program,
         associated_token_program,

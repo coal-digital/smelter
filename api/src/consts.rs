@@ -24,11 +24,20 @@ pub const INITIAL_MIN_DIFFICULTY: u32 = 1;
 /// There are 100 billion indivisible units per ORE (called "grains").
 pub const TOKEN_DECIMALS: u8 = 11;
 
-/// The decimal precision of the ORE v1 token.
-pub const TOKEN_DECIMALS_V1: u8 = 9;
+/// One INGOT token, denominated in indivisible units.
+pub const ONE_INGOT: u64 = 10u64.pow(TOKEN_DECIMALS as u32);
+
+/// One COAL token, denominated in indivisible units.
+pub const ONE_COAL: u64 = 10u64.pow(TOKEN_DECIMALS as u32);
 
 /// One ORE token, denominated in indivisible units.
 pub const ONE_ORE: u64 = 10u64.pow(TOKEN_DECIMALS as u32);
+
+/// The amount of INGOTS per one ORE
+pub const INGOTS_PER_ORE: u64 = 100;
+
+/// The amount of COALS per one INGOT
+pub const COALS_PER_INGOT: u64 = 1;
 
 /// The duration of one minute, in seconds.
 pub const ONE_MINUTE: i64 = 60;
@@ -40,10 +49,11 @@ pub const EPOCH_MINUTES: i64 = 5;
 pub const EPOCH_DURATION: i64 = ONE_MINUTE * EPOCH_MINUTES;
 
 /// The maximum token supply (21 million).
-pub const MAX_SUPPLY: u64 = ONE_ORE * 21_000_000;
+/// In reality this is limited by the availability of COAL, not the supply of INGOT.
+pub const MAX_SUPPLY: u64 = ONE_INGOT * 21_000_000;
 
 /// The target quantity of ORE to be mined per epoch.
-pub const TARGET_EPOCH_REWARDS: u64 = ONE_ORE * EPOCH_MINUTES as u64;
+pub const TARGET_EPOCH_REWARDS: u64 = ONE_INGOT * EPOCH_MINUTES as u64;
 
 /// The maximum quantity of ORE that can be mined per epoch.
 /// Inflation target ≈ 1 ORE / min
@@ -94,7 +104,7 @@ pub const METADATA_NAME: &str = "ORE";
 pub const METADATA_SYMBOL: &str = "ORE";
 
 /// The uri for token metdata.
-pub const METADATA_URI: &str = "https://ore.supply/metadata-v2.json";
+pub const METADATA_URI: &str = "https://coal.digital/metadata.ingots.json";
 
 /// Program id for const pda derivations
 const PROGRAM_ID: [u8; 32] = unsafe { *(&crate::id() as *const Pubkey as *const [u8; 32]) };
@@ -124,12 +134,13 @@ pub const METADATA_ADDRESS: Pubkey = Pubkey::new_from_array(
     .0,
 );
 
+pub const ORE_MINT_ADDRESS: Pubkey = pubkey!("oreoN2tQbHXVaZsr3pf66A48miqcBXCDJozganhEJgz");
+
+pub const COAL_MINT_ADDRESS: Pubkey = pubkey!("E3yUqBNTZxV8ELvW99oRLC7z4ddbJqqR4NphwrMug9zu");
+
 /// The address of the mint account.
 pub const MINT_ADDRESS: Pubkey =
     Pubkey::new_from_array(ed25519::derive_program_address(&[MINT, &MINT_NOISE], &PROGRAM_ID).0);
-
-/// The address of the v1 mint account.
-pub const MINT_V1_ADDRESS: Pubkey = pubkey!("oreoN2tQbHXVaZsr3pf66A48miqcBXCDJozganhEJgz");
 
 /// The address of the treasury account.
 pub const TREASURY_ADDRESS: Pubkey =
@@ -138,13 +149,26 @@ pub const TREASURY_ADDRESS: Pubkey =
 /// The bump of the treasury account, for cpis.
 pub const TREASURY_BUMP: u8 = ed25519::derive_program_address(&[TREASURY], &PROGRAM_ID).1;
 
-/// The address of the treasury token account.
+/// The address of the treasury INGOT token account.
 pub const TREASURY_TOKENS_ADDRESS: Pubkey = Pubkey::new_from_array(
     ed25519::derive_program_address(
         &[
             unsafe { &*(&TREASURY_ADDRESS as *const Pubkey as *const [u8; 32]) },
             unsafe { &*(&spl_token::id() as *const Pubkey as *const [u8; 32]) },
             unsafe { &*(&MINT_ADDRESS as *const Pubkey as *const [u8; 32]) },
+        ],
+        unsafe { &*(&spl_associated_token_account::id() as *const Pubkey as *const [u8; 32]) },
+    )
+    .0,
+);
+
+/// The address of the treasury ORE token account.
+pub const TREASURY_ORE_TOKENS_ADDRESS: Pubkey = Pubkey::new_from_array(
+    ed25519::derive_program_address(
+        &[
+            unsafe { &*(&TREASURY_ADDRESS as *const Pubkey as *const [u8; 32]) },
+            unsafe { &*(&spl_token::id() as *const Pubkey as *const [u8; 32]) },
+            unsafe { &*(&ORE_MINT_ADDRESS as *const Pubkey as *const [u8; 32]) },
         ],
         unsafe { &*(&spl_associated_token_account::id() as *const Pubkey as *const [u8; 32]) },
     )

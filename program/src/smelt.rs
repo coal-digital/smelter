@@ -9,6 +9,7 @@ use ore_api::{
     loaders::*,
     state::{Bus, Config, Proof},
 };
+use ore_utils::spl::{transfer, burn};
 use solana_program::program::set_return_data;
 #[allow(deprecated)]
 use solana_program::{
@@ -26,13 +27,13 @@ use solana_program::{
 
 use ore_utils::{loaders::*, AccountDeserialize};
 
-/// Mine validates hashes and increments a miner's collectable balance.
-pub fn process_mine<'a, 'info>(accounts: &'a [AccountInfo<'info>], data: &[u8]) -> ProgramResult {
+/// Smelt validates hashes, burns COAL, wraps ORE, and increments a smelter's collectable balance.
+pub fn process_smelt<'a, 'info>(accounts: &'a [AccountInfo<'info>], data: &[u8]) -> ProgramResult {
     // Parse args.
     let args = MineArgs::try_from_bytes(data)?;
 
     // Load accounts.
-    let [signer, bus_info, config_info, proof_info, instructions_sysvar, slot_hashes_sysvar] =
+    let [signer, bus_info, config_info, proof_info, coal_mint_info, coal_tokens_info, ore_tokens_info, treasury_ore_tokens_info, token_program, instructions_sysvar, slot_hashes_sysvar] =
         accounts
     else {
         return Err(ProgramError::NotEnoughAccountKeys);
@@ -41,6 +42,8 @@ pub fn process_mine<'a, 'info>(accounts: &'a [AccountInfo<'info>], data: &[u8]) 
     load_any_bus(bus_info, true)?;
     load_config(config_info, false)?;
     load_proof_with_miner(proof_info, signer.key, true)?;
+    load_token_account(coal_tokens_info, Some(signer.key), &COAL_MINT_ADDRESS, true)?;
+    load_treasury_ore_tokens(treasury_ore_tokens_info, true)?;
     load_sysvar(instructions_sysvar, sysvar::instructions::id())?;
     load_sysvar(slot_hashes_sysvar, sysvar::slot_hashes::id())?;
 
@@ -163,6 +166,26 @@ pub fn process_mine<'a, 'info>(accounts: &'a [AccountInfo<'info>], data: &[u8]) 
     // Busses are limited to distributing 1 ORE per epoch. This is also the maximum amount that will be paid out
     // for any given hash.
     let reward_actual = reward.min(bus.rewards).min(ONE_ORE);
+    
+    // Burn the same amount in COAL.
+    let burn_coal_amount = reward_actual.saturating_mul(COALS_PER_INGOT);
+    burn(
+        &coal_tokens_info,
+        coal_mint_info,
+        signer,
+        token_program,
+        burn_coal_amount,
+    )?;
+
+    // Wrap 1/100 the amount of ORE.
+    let wrapped_ore_amount = reward_actual.saturating_div(INGOTS_PER_ORE);
+    transfer(
+        signer,
+        ore_tokens_info,
+        treasury_ore_tokens_info,
+        token_program,
+        wrapped_ore_amount,
+    )?;
 
     // Update balances.
     //

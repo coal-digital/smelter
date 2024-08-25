@@ -1,22 +1,20 @@
 mod claim;
 mod close;
 mod initialize;
-mod mine;
+mod smelt;
 mod open;
 mod reset;
 mod stake;
 mod update;
-mod upgrade;
 
 use claim::*;
 use close::*;
 use initialize::*;
-use mine::*;
+use smelt::*;
 use open::*;
 use reset::*;
 use stake::*;
 use update::*;
-use upgrade::*;
 
 use ore_api::instruction::*;
 use solana_program::{
@@ -43,12 +41,11 @@ pub fn process_instruction(
     match OreInstruction::try_from(*tag).or(Err(ProgramError::InvalidInstructionData))? {
         OreInstruction::Claim => process_claim(accounts, data)?,
         OreInstruction::Close => process_close(accounts, data)?,
-        OreInstruction::Mine => process_mine(accounts, data)?,
+        OreInstruction::Smelt => process_smelt(accounts, data)?,
         OreInstruction::Open => process_open(accounts, data)?,
         OreInstruction::Reset => process_reset(accounts, data)?,
         OreInstruction::Stake => process_stake(accounts, data)?,
         OreInstruction::Update => process_update(accounts, data)?,
-        OreInstruction::Upgrade => process_upgrade(accounts, data)?,
         OreInstruction::Initialize => process_initialize(accounts, data)?,
     }
 
