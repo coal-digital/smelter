@@ -134,7 +134,7 @@ pub const METADATA_ADDRESS: Pubkey = Pubkey::new_from_array(
     .0,
 );
 
-pub const ORE_MINT_ADDRESS: Pubkey = pubkey!("oreoN2tQbHXVaZsr3pf66A48miqcBXCDJozganhEJgz");
+pub const ORE_MINT_ADDRESS: Pubkey = pubkey!("HBo8e248CoSno4zMvPSRkfdrSyqfZcSAu4Bc25TgPLg3");
 
 pub const COAL_MINT_ADDRESS: Pubkey = pubkey!("E3yUqBNTZxV8ELvW99oRLC7z4ddbJqqR4NphwrMug9zu");
 

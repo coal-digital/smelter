@@ -1,5 +1,5 @@
 use bytemuck::{Pod, Zeroable};
-use drillx::Solution;
+use drillx_2::Solution;
 use num_enum::TryFromPrimitive;
 use solana_program::{
     instruction::{AccountMeta, Instruction},
@@ -176,6 +176,7 @@ pub fn smelt(
             AccountMeta::new_readonly(COAL_MINT_ADDRESS, false),
             AccountMeta::new(coal_token_address, false),
             AccountMeta::new(ore_token_address, false),
+            AccountMeta::new_readonly(TREASURY_ORE_TOKENS_ADDRESS, false),
             AccountMeta::new_readonly(spl_token::id(), false),
             AccountMeta::new_readonly(sysvar::instructions::id(), false),
             AccountMeta::new_readonly(sysvar::slot_hashes::id(), false),
