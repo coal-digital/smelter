@@ -1,10 +1,10 @@
-use ore_api::{loaders::*, state::Proof};
+use smelter_api::{loaders::*, state::Proof};
 use solana_program::{
     account_info::AccountInfo, entrypoint::ProgramResult, program_error::ProgramError,
     system_program,
 };
 
-use ore_utils::{loaders::*, AccountDeserialize};
+use smelter_utils::{loaders::*, AccountDeserialize};
 
 /// Close closes a proof account and returns the rent to the owner.
 pub fn process_close<'a, 'info>(accounts: &'a [AccountInfo<'info>], _data: &[u8]) -> ProgramResult {

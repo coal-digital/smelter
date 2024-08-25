@@ -1,5 +1,5 @@
-use ore_api::{consts::*, instruction::StakeArgs, loaders::*, state::Proof};
-use ore_utils::{loaders::*, spl::transfer, AccountDeserialize};
+use smelter_api::{consts::*, instruction::StakeArgs, loaders::*, state::Proof};
+use smelter_utils::{loaders::*, spl::transfer, AccountDeserialize};
 use solana_program::{
     account_info::AccountInfo, clock::Clock, entrypoint::ProgramResult,
     program_error::ProgramError, sysvar::Sysvar,

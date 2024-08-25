@@ -1,11 +1,11 @@
 use std::mem::size_of;
 
-use ore_api::{
+use smelter_api::{
     consts::*,
     instruction::*,
     state::{Bus, Config, Treasury},
 };
-use ore_utils::{create_pda, loaders::*, spl::create_ata, AccountDeserialize, Discriminator};
+use smelter_utils::{create_pda, loaders::*, spl::create_ata, AccountDeserialize, Discriminator};
 use solana_program::{
     account_info::AccountInfo,
     entrypoint::ProgramResult,
@@ -30,15 +30,15 @@ pub fn process_initialize<'a, 'info>(
         return Err(ProgramError::NotEnoughAccountKeys);
     };
     load_signer(signer)?;
-    load_uninitialized_pda(bus_0_info, &[BUS, &[0]], args.bus_0_bump, &ore_api::id())?;
-    load_uninitialized_pda(bus_1_info, &[BUS, &[1]], args.bus_1_bump, &ore_api::id())?;
-    load_uninitialized_pda(bus_2_info, &[BUS, &[2]], args.bus_2_bump, &ore_api::id())?;
-    load_uninitialized_pda(bus_3_info, &[BUS, &[3]], args.bus_3_bump, &ore_api::id())?;
-    load_uninitialized_pda(bus_4_info, &[BUS, &[4]], args.bus_4_bump, &ore_api::id())?;
-    load_uninitialized_pda(bus_5_info, &[BUS, &[5]], args.bus_5_bump, &ore_api::id())?;
-    load_uninitialized_pda(bus_6_info, &[BUS, &[6]], args.bus_6_bump, &ore_api::id())?;
-    load_uninitialized_pda(bus_7_info, &[BUS, &[7]], args.bus_7_bump, &ore_api::id())?;
-    load_uninitialized_pda(config_info, &[CONFIG], args.config_bump, &ore_api::id())?;
+    load_uninitialized_pda(bus_0_info, &[BUS, &[0]], args.bus_0_bump, &smelter_api::id())?;
+    load_uninitialized_pda(bus_1_info, &[BUS, &[1]], args.bus_1_bump, &smelter_api::id())?;
+    load_uninitialized_pda(bus_2_info, &[BUS, &[2]], args.bus_2_bump, &smelter_api::id())?;
+    load_uninitialized_pda(bus_3_info, &[BUS, &[3]], args.bus_3_bump, &smelter_api::id())?;
+    load_uninitialized_pda(bus_4_info, &[BUS, &[4]], args.bus_4_bump, &smelter_api::id())?;
+    load_uninitialized_pda(bus_5_info, &[BUS, &[5]], args.bus_5_bump, &smelter_api::id())?;
+    load_uninitialized_pda(bus_6_info, &[BUS, &[6]], args.bus_6_bump, &smelter_api::id())?;
+    load_uninitialized_pda(bus_7_info, &[BUS, &[7]], args.bus_7_bump, &smelter_api::id())?;
+    load_uninitialized_pda(config_info, &[CONFIG], args.config_bump, &smelter_api::id())?;
     load_uninitialized_pda(
         metadata_info,
         &[
@@ -53,13 +53,13 @@ pub fn process_initialize<'a, 'info>(
         mint_info,
         &[MINT, MINT_NOISE.as_slice()],
         args.mint_bump,
-        &ore_api::id(),
+        &smelter_api::id(),
     )?;
     load_uninitialized_pda(
         treasury_info,
         &[TREASURY],
         args.treasury_bump,
-        &ore_api::id(),
+        &smelter_api::id(),
     )?;
     load_system_account(treasury_tokens_info, true)?;
     load_system_account(ore_treasury_tokens_info, true)?;
@@ -92,7 +92,7 @@ pub fn process_initialize<'a, 'info>(
     for i in 0..BUS_COUNT {
         create_pda(
             bus_infos[i],
-            &ore_api::id(),
+            &smelter_api::id(),
             8 + size_of::<Bus>(),
             &[BUS, &[i as u8], &[bus_bumps[i]]],
             system_program,
@@ -110,7 +110,7 @@ pub fn process_initialize<'a, 'info>(
     // Initialize config.
     create_pda(
         config_info,
-        &ore_api::id(),
+        &smelter_api::id(),
         8 + size_of::<Config>(),
         &[CONFIG, &[args.config_bump]],
         system_program,
@@ -127,7 +127,7 @@ pub fn process_initialize<'a, 'info>(
     // Initialize treasury.
     create_pda(
         treasury_info,
-        &ore_api::id(),
+        &smelter_api::id(),
         8 + size_of::<Treasury>(),
         &[TREASURY, &[args.treasury_bump]],
         system_program,

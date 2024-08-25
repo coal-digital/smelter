@@ -1,4 +1,4 @@
-use ore_api::{
+use smelter_api::{
     consts::*,
     error::OreError,
     loaders::*,
@@ -10,7 +10,7 @@ use solana_program::{
 };
 use spl_token::state::Mint;
 
-use ore_utils::{loaders::*, AccountDeserialize};
+use smelter_utils::{loaders::*, AccountDeserialize};
 
 /// Reset tops up the bus balances, updates the base reward rate, and sets up the ORE program for the next epoch.
 pub fn process_reset<'a, 'info>(accounts: &'a [AccountInfo<'info>], _data: &[u8]) -> ProgramResult {
@@ -164,7 +164,7 @@ mod tests {
     use rand::{distributions::Uniform, Rng};
 
     use crate::calculate_new_reward_rate;
-    use ore_api::consts::{
+    use smelter_api::consts::{
         BASE_REWARD_RATE_MIN_THRESHOLD, BUS_EPOCH_REWARDS, MAX_EPOCH_REWARDS, SMOOTHING_FACTOR,
         TARGET_EPOCH_REWARDS,
     };

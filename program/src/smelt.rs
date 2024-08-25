@@ -1,7 +1,7 @@
 use std::mem::size_of;
 
 use drillx::Solution;
-use ore_api::{
+use smelter_api::{
     consts::*,
     error::OreError,
     event::MineEvent,
@@ -9,7 +9,7 @@ use ore_api::{
     loaders::*,
     state::{Bus, Config, Proof},
 };
-use ore_utils::spl::{transfer, burn};
+use smelter_utils::spl::{transfer, burn};
 use solana_program::program::set_return_data;
 #[allow(deprecated)]
 use solana_program::{
@@ -25,7 +25,7 @@ use solana_program::{
     sysvar::{self, Sysvar},
 };
 
-use ore_utils::{loaders::*, AccountDeserialize};
+use smelter_utils::{loaders::*, AccountDeserialize};
 
 /// Smelt validates hashes, burns COAL, wraps ORE, and increments a smelter's collectable balance.
 pub fn process_smelt<'a, 'info>(accounts: &'a [AccountInfo<'info>], data: &[u8]) -> ProgramResult {

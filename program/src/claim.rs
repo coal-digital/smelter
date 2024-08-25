@@ -1,10 +1,10 @@
-use ore_api::{consts::*, error::OreError, instruction::ClaimArgs, loaders::*, state::Proof};
-use ore_utils::spl::transfer_signed;
+use smelter_api::{consts::*, error::OreError, instruction::ClaimArgs, loaders::*, state::Proof};
+use smelter_utils::spl::transfer_signed;
 use solana_program::{
     account_info::AccountInfo, entrypoint::ProgramResult, program_error::ProgramError,
 };
 
-use ore_utils::{loaders::*, AccountDeserialize};
+use smelter_utils::{loaders::*, AccountDeserialize};
 
 /// Claim distributes claimable ORE from the treasury to a miner.
 pub fn process_claim<'a, 'info>(accounts: &'a [AccountInfo<'info>], data: &[u8]) -> ProgramResult {

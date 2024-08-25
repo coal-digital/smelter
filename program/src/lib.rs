@@ -16,7 +16,7 @@ use reset::*;
 use stake::*;
 use update::*;
 
-use ore_api::instruction::*;
+use smelter_api::instruction::*;
 use solana_program::{
     self, account_info::AccountInfo, entrypoint::ProgramResult, program_error::ProgramError,
     pubkey::Pubkey,
@@ -30,7 +30,7 @@ pub fn process_instruction(
     accounts: &[AccountInfo],
     data: &[u8],
 ) -> ProgramResult {
-    if program_id.ne(&ore_api::id()) {
+    if program_id.ne(&smelter_api::id()) {
         return Err(ProgramError::IncorrectProgramId);
     }
 
