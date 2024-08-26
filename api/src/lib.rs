@@ -9,4 +9,4 @@ pub(crate) use smelter_utils as utils;
 
 use solana_program::declare_id;
 
-declare_id!("6MySo7uzbmSyJiXLqrXbELrHvY4YsRZL24q5xYjKac2a");
+declare_id!("CqUy7rPs8uz4nTmDgE9sVjmpfhEX4BvFBzKCPAQd8PgT");

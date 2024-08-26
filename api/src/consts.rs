@@ -37,7 +37,7 @@ pub const ONE_ORE: u64 = 10u64.pow(TOKEN_DECIMALS as u32);
 pub const INGOTS_PER_ORE: u64 = 100;
 
 /// The amount of COALS per one INGOT
-pub const COALS_PER_INGOT: u64 = 1;
+pub const COALS_PER_INGOT: u64 = 200;
 
 /// The duration of one minute, in seconds.
 pub const ONE_MINUTE: i64 = 60;
@@ -98,10 +98,10 @@ pub const MINT_NOISE: [u8; 16] = [
 ];
 
 /// The name for token metadata.
-pub const METADATA_NAME: &str = "ORE";
+pub const METADATA_NAME: &str = "INGOT";
 
 /// The ticker symbol for token metadata.
-pub const METADATA_SYMBOL: &str = "ORE";
+pub const METADATA_SYMBOL: &str = "INGOT";
 
 /// The uri for token metdata.
 pub const METADATA_URI: &str = "https://coal.digital/metadata.ingots.json";

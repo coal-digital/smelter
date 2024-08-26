@@ -10,7 +10,7 @@ use smelter_api::{
     state::{Bus, Config, Proof},
 };
 use smelter_utils::spl::{transfer, burn};
-use solana_program::program::set_return_data;
+use solana_program::{msg, program::set_return_data};
 #[allow(deprecated)]
 use solana_program::{
     account_info::AccountInfo,
@@ -39,11 +39,17 @@ pub fn process_smelt<'a, 'info>(accounts: &'a [AccountInfo<'info>], data: &[u8])
         return Err(ProgramError::NotEnoughAccountKeys);
     };
     load_signer(signer)?;
+    msg!("signer loaded");
     load_any_bus(bus_info, true)?;
+    msg!("bus loaded");
     load_config(config_info, false)?;
+    msg!("config loaded");
     load_proof_with_miner(proof_info, signer.key, true)?;
+    msg!("proof loaded");
     load_token_account(coal_tokens_info, Some(signer.key), &COAL_MINT_ADDRESS, true)?;
+    msg!("coal tokens loaded");
     load_treasury_ore_tokens(treasury_ore_tokens_info, true)?;
+    msg!("treasury ore tokens loaded");
     load_sysvar(instructions_sysvar, sysvar::instructions::id())?;
     load_sysvar(slot_hashes_sysvar, sysvar::slot_hashes::id())?;
 
@@ -166,9 +172,28 @@ pub fn process_smelt<'a, 'info>(accounts: &'a [AccountInfo<'info>], data: &[u8])
     // Busses are limited to distributing 1 ORE per epoch. This is also the maximum amount that will be paid out
     // for any given hash.
     let reward_actual = reward.min(bus.rewards).min(ONE_ORE);
+    msg!("reward actual {}", reward_actual);
     
-    // Burn the same amount in COAL.
-    let burn_coal_amount = reward_actual.saturating_mul(COALS_PER_INGOT);
+    // Calculate the COAL burn amount.
+    let mut burn_coal_amount = reward_actual.saturating_mul(COALS_PER_INGOT);
+    msg!("burning {} coal", burn_coal_amount);
+    
+    // Apply burn discount.
+    //
+    // If user has greater than or equal to the max stake on the network, they receive 2x discount.
+    // Any stake less than this will receives between 1x and 2x multipler. The multipler is only active
+    // if the miner's last stake deposit was more than one minute ago to protect against flash loan attacks.
+    if proof.balance.gt(&0) && proof.last_stake_at.saturating_add(ONE_MINUTE).lt(&t) {
+        // Calculate staking reward.
+        if config.top_balance.gt(&0) {
+            let discount_percentage = (proof.balance as f64 / config.top_balance as f64).min(1.0) * 0.25;
+            let burn_coal_discount = (burn_coal_amount as f64 * discount_percentage) as u64;
+            burn_coal_amount = burn_coal_amount.saturating_sub(burn_coal_discount);
+        }
+    }
+    msg!("burning {} coal after discount", burn_coal_amount);
+    
+    // Burn the COAL.
     burn(
         &coal_tokens_info,
         coal_mint_info,
@@ -176,9 +201,11 @@ pub fn process_smelt<'a, 'info>(accounts: &'a [AccountInfo<'info>], data: &[u8])
         token_program,
         burn_coal_amount,
     )?;
+    msg!("coal burned");
 
     // Wrap 1/100 the amount of ORE.
     let wrapped_ore_amount = reward_actual.saturating_div(INGOTS_PER_ORE);
+    msg!("wrapping {} ore", wrapped_ore_amount);
     transfer(
         signer,
         ore_tokens_info,
@@ -186,7 +213,7 @@ pub fn process_smelt<'a, 'info>(accounts: &'a [AccountInfo<'info>], data: &[u8])
         token_program,
         wrapped_ore_amount,
     )?;
-
+    msg!("ore wrapped");
     // Update balances.
     //
     // We track the theoretical rewards that would have been paid out ignoring the bus limit, so the
