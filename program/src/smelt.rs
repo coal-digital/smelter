@@ -10,7 +10,7 @@ use smelter_api::{
     state::{Bus, Config, Proof},
 };
 use smelter_utils::spl::{transfer, burn};
-use solana_program::{msg, program::set_return_data};
+use solana_program::program::set_return_data;
 #[allow(deprecated)]
 use solana_program::{
     account_info::AccountInfo,

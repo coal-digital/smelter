@@ -101,7 +101,7 @@ pub const MINT_NOISE: [u8; 16] = [
 ];
 
 /// The name for token metadata.
-pub const METADATA_NAME: &str = "INGOT";
+pub const METADATA_NAME: &str = "Iron Ingot";
 
 /// The ticker symbol for token metadata.
 pub const METADATA_SYMBOL: &str = "INGOT";
@@ -137,7 +137,7 @@ pub const METADATA_ADDRESS: Pubkey = Pubkey::new_from_array(
     .0,
 );
 
-pub const ORE_MINT_ADDRESS: Pubkey = pubkey!("HBo8e248CoSno4zMvPSRkfdrSyqfZcSAu4Bc25TgPLg3");
+pub const ORE_MINT_ADDRESS: Pubkey = pubkey!("oreoU2P8bN6jkk3jbaiVxYnG1dCXcYxwhwyK9jSybcp");
 
 pub const COAL_MINT_ADDRESS: Pubkey = pubkey!("E3yUqBNTZxV8ELvW99oRLC7z4ddbJqqR4NphwrMug9zu");
 
