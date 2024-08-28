@@ -37,7 +37,7 @@ pub const ONE_ORE: u64 = 10u64.pow(TOKEN_DECIMALS as u32);
 pub const INGOTS_PER_ORE: u64 = 100;
 
 /// The amount of COALS per one INGOT
-pub const COALS_PER_INGOT: u64 = 200;
+pub const COALS_PER_INGOT: u64 = 100;
 
 /// The duration of one minute, in seconds.
 pub const ONE_MINUTE: i64 = 60;
@@ -61,6 +61,9 @@ pub const MAX_EPOCH_REWARDS: u64 = TARGET_EPOCH_REWARDS * BUS_COUNT as u64;
 
 /// The quantity of ORE each bus is allowed to issue per epoch.
 pub const BUS_EPOCH_REWARDS: u64 = MAX_EPOCH_REWARDS / BUS_COUNT as u64;
+
+/// The maximum discount percentage for staked COAL.
+pub const MAX_EFFICIENCY_BONUS_PERCENTAGE: f64 = 0.25;
 
 /// The number of bus accounts, for parallelizing mine operations.
 pub const BUS_COUNT: usize = 8;

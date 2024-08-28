@@ -186,8 +186,8 @@ pub fn process_smelt<'a, 'info>(accounts: &'a [AccountInfo<'info>], data: &[u8])
     if proof.balance.gt(&0) && proof.last_stake_at.saturating_add(ONE_MINUTE).lt(&t) {
         // Calculate staking reward.
         if config.top_balance.gt(&0) {
-            let discount_percentage = (proof.balance as f64 / config.top_balance as f64).min(1.0) * 0.25;
-            let burn_coal_discount = (burn_coal_amount as f64 * discount_percentage) as u64;
+            let efficiency_bonus_percentage = (proof.balance as f64 / config.top_balance as f64).min(1.0) * MAX_EFFICIENCY_BONUS_PERCENTAGE;
+            let burn_coal_discount = (burn_coal_amount as f64 * efficiency_bonus_percentage) as u64;
             burn_coal_amount = burn_coal_amount.saturating_sub(burn_coal_discount);
         }
     }
