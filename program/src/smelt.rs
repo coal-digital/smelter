@@ -228,6 +228,7 @@ pub fn process_smelt<'a, 'info>(accounts: &'a [AccountInfo<'info>], data: &[u8])
     // miners are forced to submit their current solution before they can begin mining for the next.
     proof.last_hash = hash.h;
     proof.challenge = hashv(&[
+        b"smelt",
         hash.h.as_slice(),
         &slot_hashes_sysvar.data.borrow()[0..size_of::<SlotHash>()],
     ])
