@@ -52,6 +52,7 @@ pub fn process_open<'a, 'info>(accounts: &'a [AccountInfo<'info>], data: &[u8]) 
     proof.authority = *signer.key;
     proof.balance = 0;
     proof.challenge = hashv(&[
+        b"smelt",
         signer.key.as_ref(),
         &slot_hashes_info.data.borrow()[0..size_of::<SlotHash>()],
     ])
