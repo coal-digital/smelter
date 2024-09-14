@@ -721,10 +721,10 @@ dependencies = [
 ]
 
 [[package]]
-name = "drillx_2"
-version = "1.0.0"
+name = "drillx"
+version = "2.1.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "af4e3aca4ae86ab0d0050f50b322adab7c0e93904896a5c60bdb33324ea1d36a"
+checksum = "9f1b6097a8aeb360dc83cad60047b42cfabf54a56b81a75e254f5854211a7475"
 dependencies = [
  "equix",
  "serde",
@@ -1760,12 +1760,12 @@ checksum = "3c5e1a9a646d36c3599cd173a41282daf47c44583ad367b8e6837255952e5c67"
 
 [[package]]
 name = "smelter-api"
-version = "1.0.0"
+version = "1.0.1"
 dependencies = [
  "array-const-fn-init",
  "bytemuck",
  "const-crypto",
- "drillx_2",
+ "drillx",
  "mpl-token-metadata",
  "num_enum",
  "smelter-utils",
@@ -1778,9 +1778,9 @@ dependencies = [
 
 [[package]]
 name = "smelter-program"
-version = "1.0.0"
+version = "1.0.1"
 dependencies = [
- "drillx_2",
+ "drillx",
  "mpl-token-metadata",
  "rand 0.8.5",
  "smelter-api",
@@ -1792,7 +1792,7 @@ dependencies = [
 
 [[package]]
 name = "smelter-utils"
-version = "1.0.0"
+version = "1.0.1"
 dependencies = [
  "bytemuck",
  "solana-program",

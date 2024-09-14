@@ -1,6 +1,6 @@
 use std::mem::size_of;
 
-use drillx_2::Solution;
+use drillx::Solution;
 use smelter_api::{
     consts::*,
     error::OreError,

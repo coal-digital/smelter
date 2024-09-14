@@ -19,7 +19,7 @@ no-entrypoint = []
 default = []
 
 [dependencies]
-drillx_2.workspace = true
+drillx.workspace = true
 mpl-token-metadata.workspace = true
 smelter-api.workspace = true
 smelter-utils.workspace = true

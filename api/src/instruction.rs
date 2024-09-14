@@ -1,5 +1,5 @@
 use bytemuck::{Pod, Zeroable};
-use drillx_2::Solution;
+use drillx::Solution;
 use num_enum::TryFromPrimitive;
 use solana_program::{
     instruction::{AccountMeta, Instruction},
@@ -15,7 +15,7 @@ use crate::{
 #[repr(u8)]
 #[derive(Clone, Copy, Debug, Eq, PartialEq, TryFromPrimitive)]
 #[rustfmt::skip]
-pub enum OreInstruction {
+pub enum SmelterInstruction {
     // User
     Claim = 0,
     Close = 1,
@@ -29,7 +29,7 @@ pub enum OreInstruction {
     Initialize = 100,
 }
 
-impl OreInstruction {
+impl SmelterInstruction {
     pub fn to_vec(&self) -> Vec<u8> {
         vec![*self as u8]
     }
@@ -124,7 +124,7 @@ pub fn claim(signer: Pubkey, beneficiary: Pubkey, amount: u64) -> Instruction {
             AccountMeta::new_readonly(spl_token::id(), false),
         ],
         data: [
-            OreInstruction::Claim.to_vec(),
+            SmelterInstruction::Claim.to_vec(),
             ClaimArgs {
                 amount: amount.to_le_bytes(),
             }
@@ -145,7 +145,7 @@ pub fn close(signer: Pubkey) -> Instruction {
             AccountMeta::new(proof_pda.0, false),
             AccountMeta::new_readonly(solana_program::system_program::id(), false),
         ],
-        data: OreInstruction::Close.to_vec(),
+        data: SmelterInstruction::Close.to_vec(),
     }
 }
 
@@ -182,7 +182,7 @@ pub fn smelt(
             AccountMeta::new_readonly(sysvar::slot_hashes::id(), false),
         ],
         data: [
-            OreInstruction::Smelt.to_vec(),
+            SmelterInstruction::Smelt.to_vec(),
             MineArgs {
                 digest: solution.d,
                 nonce: solution.n,
@@ -208,7 +208,7 @@ pub fn open(signer: Pubkey, miner: Pubkey, payer: Pubkey) -> Instruction {
             AccountMeta::new_readonly(sysvar::slot_hashes::id(), false),
         ],
         data: [
-            OreInstruction::Open.to_vec(),
+            SmelterInstruction::Open.to_vec(),
             OpenArgs { bump: proof_pda.1 }.to_bytes().to_vec(),
         ]
         .concat(),
@@ -239,7 +239,7 @@ pub fn reset(signer: Pubkey) -> Instruction {
             AccountMeta::new(treasury_tokens, false),
             AccountMeta::new_readonly(spl_token::id(), false),
         ],
-        data: OreInstruction::Reset.to_vec(),
+        data: SmelterInstruction::Reset.to_vec(),
     }
 }
 
@@ -260,7 +260,7 @@ pub fn stake(signer: Pubkey, sender: Pubkey, amount: u64) -> Instruction {
             AccountMeta::new_readonly(spl_token::id(), false),
         ],
         data: [
-            OreInstruction::Stake.to_vec(),
+            SmelterInstruction::Stake.to_vec(),
             StakeArgs {
                 amount: amount.to_le_bytes(),
             }
@@ -281,7 +281,7 @@ pub fn update(signer: Pubkey, miner: Pubkey) -> Instruction {
             AccountMeta::new_readonly(miner, false),
             AccountMeta::new(proof, false),
         ],
-        data: OreInstruction::Update.to_vec(),
+        data: SmelterInstruction::Update.to_vec(),
     }
 }
 
@@ -339,7 +339,7 @@ pub fn initialize(signer: Pubkey) -> Instruction {
             AccountMeta::new_readonly(sysvar::rent::id(), false),
         ],
         data: [
-            OreInstruction::Initialize.to_vec(),
+            SmelterInstruction::Initialize.to_vec(),
             InitializeArgs {
                 bus_0_bump: bus_pdas[0].1,
                 bus_1_bump: bus_pdas[1].1,

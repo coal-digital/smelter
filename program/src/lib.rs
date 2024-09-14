@@ -38,15 +38,15 @@ pub fn process_instruction(
         .split_first()
         .ok_or(ProgramError::InvalidInstructionData)?;
 
-    match OreInstruction::try_from(*tag).or(Err(ProgramError::InvalidInstructionData))? {
-        OreInstruction::Claim => process_claim(accounts, data)?,
-        OreInstruction::Close => process_close(accounts, data)?,
-        OreInstruction::Smelt => process_smelt(accounts, data)?,
-        OreInstruction::Open => process_open(accounts, data)?,
-        OreInstruction::Reset => process_reset(accounts, data)?,
-        OreInstruction::Stake => process_stake(accounts, data)?,
-        OreInstruction::Update => process_update(accounts, data)?,
-        OreInstruction::Initialize => process_initialize(accounts, data)?,
+    match SmelterInstruction::try_from(*tag).or(Err(ProgramError::InvalidInstructionData))? {
+        SmelterInstruction::Claim => process_claim(accounts, data)?,
+        SmelterInstruction::Close => process_close(accounts, data)?,
+        SmelterInstruction::Smelt => process_smelt(accounts, data)?,
+        SmelterInstruction::Open => process_open(accounts, data)?,
+        SmelterInstruction::Reset => process_reset(accounts, data)?,
+        SmelterInstruction::Stake => process_stake(accounts, data)?,
+        SmelterInstruction::Update => process_update(accounts, data)?,
+        SmelterInstruction::Initialize => process_initialize(accounts, data)?,
     }
 
     Ok(())
