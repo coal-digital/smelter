@@ -165,7 +165,7 @@ pub fn process_smelt<'a, 'info>(accounts: &'a [AccountInfo<'info>], data: &[u8])
     //
     // Busses are limited to distributing 1 ORE per epoch. This is also the maximum amount that will be paid out
     // for any given hash.
-    let reward_actual = reward.min(bus.rewards).min(ONE_ORE);
+    let reward_actual = reward.min(bus.rewards).min(ONE_ORE / 3);
     
     // Calculate the COAL burn amount.
     let mut burn_coal_amount = reward_actual.saturating_mul(COALS_PER_INGOT);
