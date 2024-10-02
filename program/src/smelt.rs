@@ -163,7 +163,7 @@ pub fn process_smelt<'a, 'info>(accounts: &'a [AccountInfo<'info>], data: &[u8])
 
     // Limit payout amount to whatever is left in the bus.
     //
-    // Busses are limited to distributing 1 ORE per epoch. This is also the maximum amount that will be paid out
+    // Busses are limited to distributing 0.33 INGOT per epoch. This is also the maximum amount that will be paid out
     // for any given hash.
     let reward_actual = reward.min(bus.rewards).min(ONE_ORE / 3);
     
