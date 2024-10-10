@@ -53,7 +53,7 @@ pub const EPOCH_DURATION: i64 = ONE_MINUTE * EPOCH_MINUTES;
 pub const MAX_SUPPLY: u64 = ONE_INGOT * 21_000_000;
 
 /// The target quantity of ORE to be mined per epoch.
-pub const TARGET_EPOCH_REWARDS: u64 = (ONE_INGOT / 3) * EPOCH_MINUTES as u64;
+pub const TARGET_EPOCH_REWARDS: u64 = (ONE_INGOT / 30) * EPOCH_MINUTES as u64;
 
 /// The maximum quantity of ORE that can be mined per epoch.
 /// Inflation target ≈ 1 ORE / min
